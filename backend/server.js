@@ -18,24 +18,20 @@ const allowedOrigins = [
   "http://localhost:5178",
   "http://localhost:5179",
   "http://localhost:5180",
-];
-
-if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL);
-}
+  "https://vu-huynh-mobile.vercel.app",
+  process.env.FRONTEND_URL,
+].filter(Boolean);
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) {
-        return callback(null, true);
-      }
+      if (!origin) return callback(null, true);
 
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
+      return callback(new Error("CORS blocked for origin: " + origin), false);
     },
     credentials: true,
   })
@@ -91,14 +87,12 @@ const seedProducts = async () => {
       console.log("Seeded default products");
     }
   } catch (error) {
-    console.error("Seed products error:", error);
+    console.error("Seed products error:", error.message);
   }
 };
 
 seedProducts();
 
-const PORT = process.env.PORT || 5001;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(process.env.PORT || 5001, () => {
+  console.log(`Server running on port ${process.env.PORT || 5001}`);
 });
