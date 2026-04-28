@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { getProducts } from "../services/productService";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const featuredProduct = products[0];
+  const brands = ["iPhone", "Samsung", "Xiaomi", "OPPO", "Phụ kiện"];
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -27,11 +30,11 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-text">
-            <span className="hero-eyebrow">HUYNH VU MOBILE STORE</span>
-            <h1>Điện thoại chính hãng, tư vấn kỹ, giao hàng nhanh.</h1>
+            <span className="hero-eyebrow">HUYNH VU MOBILE</span>
+            <h1>Chọn điện thoại đẹp, mua rõ giá, nhận máy an tâm.</h1>
             <p>
-              Mua iPhone, Samsung, Xiaomi và các dòng máy đáng tiền với thông
-              tin rõ ràng, hình ảnh thật, giá minh bạch và hỗ trợ sau bán hàng.
+              Cửa hàng điện thoại chính hãng với trải nghiệm mua hàng gọn gàng:
+              xem sản phẩm, kiểm tra giá, thêm giỏ và để shop xác nhận nhanh.
             </p>
 
             <div className="hero-actions">
@@ -45,22 +48,36 @@ export default function Home() {
 
             <div className="hero-badges">
               <span className="hero-badge">Hàng chính hãng</span>
-              <span className="hero-badge">Giá niêm yết rõ</span>
-              <span className="hero-badge">Bảo hành minh bạch</span>
+              <span className="hero-badge">Giá rõ ràng</span>
+              <span className="hero-badge">Tư vấn đúng nhu cầu</span>
             </div>
           </div>
 
           <div className="hero-showcase">
-            <div className="hero-phone-frame">
-              <img
-                src="https://images.unsplash.com/photo-1695636953873-8db5f5e71fd6?q=80&w=1200&auto=format&fit=crop"
-                alt="Điện thoại cao cấp"
-              />
+            <div className="hero-device-panel">
+              <div className="hero-phone-frame">
+                <img
+                  src={
+                    featuredProduct
+                      ? resolveImageUrl(featuredProduct.image)
+                      : "https://images.unsplash.com/photo-1695636953873-8db5f5e71fd6?q=80&w=1200&auto=format&fit=crop"
+                  }
+                  alt={featuredProduct?.name || "Điện thoại cao cấp"}
+                />
+              </div>
+              <div className="hero-product-strip">
+                <span>Sẵn sàng tư vấn</span>
+                <strong>{featuredProduct?.name || "Dòng máy mới nhất"}</strong>
+                <p>
+                  {featuredProduct
+                    ? `${Number(featuredProduct.price || 0).toLocaleString()} đ`
+                    : "Giá tốt, bảo hành rõ ràng"}
+                </p>
+              </div>
             </div>
             <div className="hero-deal-card">
-              <span>Sản phẩm nổi bật</span>
-              <strong>iPhone, Samsung, Xiaomi</strong>
-              <p>Đặt hàng online, shop xác nhận nhanh.</p>
+              <span>Dịch vụ tại shop</span>
+              <strong>Đặt online, xác nhận nhanh, hỗ trợ sau mua.</strong>
             </div>
           </div>
         </div>
@@ -69,27 +86,33 @@ export default function Home() {
       <section className="trust-band">
         <div className="container trust-grid">
           <div className="trust-item">
-            <strong>24/7</strong>
-            <span>Tư vấn và xác nhận đơn</span>
+            <strong>01</strong>
+            <span>Xem cấu hình và giá bán rõ ràng</span>
           </div>
           <div className="trust-item">
-            <strong>100%</strong>
-            <span>Thông tin sản phẩm rõ ràng</span>
+            <strong>02</strong>
+            <span>Thêm giỏ, gửi thông tin nhận hàng</span>
           </div>
           <div className="trust-item">
-            <strong>12T</strong>
-            <span>Bảo hành tiêu chuẩn</span>
+            <strong>03</strong>
+            <span>Shop gọi xác nhận trước khi giao</span>
           </div>
         </div>
       </section>
 
       <section className="section-space" id="products">
         <div className="container">
+          <div className="brand-row" aria-label="Danh mục sản phẩm">
+            {brands.map((brand) => (
+              <span key={brand}>{brand}</span>
+            ))}
+          </div>
+
           <div className="section-head">
             <div>
               <h2 className="page-title">Sản phẩm nổi bật</h2>
               <p className="section-subtitle">
-                Bộ sưu tập điện thoại đáng mua nhất hiện tại
+                Danh sách máy đang được shop cập nhật để khách chọn nhanh
               </p>
             </div>
           </div>
