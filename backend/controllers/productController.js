@@ -1,18 +1,18 @@
 const Product = require("../models/Product");
 
 const buildProductPayload = (body, file, existingImage = "") => {
+  const uploadedImage = file
+    ? `data:${file.mimetype};base64,${file.buffer.toString("base64")}`
+    : "";
+
   const payload = {
     name: body.name,
     price: Number(body.price || 0),
-    image: body.image || existingImage,
+    image: uploadedImage || body.image || existingImage,
     description: body.description || "",
     brand: body.brand || "Other",
     countInStock: Number(body.countInStock || 0),
   };
-
-  if (file) {
-    payload.image = `/uploads/${file.filename}`;
-  }
 
   return payload;
 };

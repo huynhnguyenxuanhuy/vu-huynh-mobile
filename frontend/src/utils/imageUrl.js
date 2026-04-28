@@ -7,7 +7,11 @@ export const resolveImageUrl = (image) => {
     return "https://via.placeholder.com/900x700?text=No+Image";
   }
 
-  if (image.startsWith("http://") || image.startsWith("https://")) {
+  if (
+    image.startsWith("http://") ||
+    image.startsWith("https://") ||
+    image.startsWith("data:")
+  ) {
     return image;
   }
 
