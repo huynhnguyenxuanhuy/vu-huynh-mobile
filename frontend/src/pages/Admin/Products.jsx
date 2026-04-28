@@ -303,13 +303,6 @@ export default function Products() {
                         accept="image/*"
                         onChange={handleImageChange}
                       />
-                      <input
-                        type="text"
-                        name="image"
-                        placeholder="Hoặc giữ link ảnh cũ nếu cần"
-                        value={form.image}
-                        onChange={handleChange}
-                      />
                       <small>Chọn ảnh trực tiếp từ thiết bị của admin.</small>
                     </div>
                   </div>

@@ -427,12 +427,6 @@ export default function Dashboard() {
                           accept="image/*"
                           onChange={handleImageChange}
                         />
-                        <input
-                          name="image"
-                          value={form.image}
-                          onChange={handleChange}
-                          placeholder="Hoặc giữ link ảnh cũ nếu cần"
-                        />
                         <small>
                           Chọn ảnh từ máy tính để sản phẩm hiển thị chuyên nghiệp hơn.
                         </small>
