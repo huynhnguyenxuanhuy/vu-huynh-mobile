@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { getProducts } from "../services/productService";
 
@@ -26,33 +27,40 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-text">
-            <span className="hero-eyebrow">HUYNH VU MOBILE</span>
-            <h1>Cửa hàng điện thoại chính hãng cho khách cần sự an tâm</h1>
+            <span className="hero-eyebrow">HUYNH VU MOBILE STORE</span>
+            <h1>Điện thoại chính hãng, tư vấn kỹ, giao hàng nhanh.</h1>
             <p>
-              Chọn máy đẹp, giá rõ ràng, tư vấn đúng nhu cầu và hỗ trợ sau bán
-              hàng nghiêm túc. Tất cả sản phẩm được quản lý trực tiếp trên hệ
-              thống để khách đặt hàng nhanh và minh bạch.
+              Mua iPhone, Samsung, Xiaomi và các dòng máy đáng tiền với thông
+              tin rõ ràng, hình ảnh thật, giá minh bạch và hỗ trợ sau bán hàng.
             </p>
 
+            <div className="hero-actions">
+              <a href="#products" className="btn btn-primary">
+                Xem sản phẩm
+              </a>
+              <Link to="/cart" className="btn btn-ghost">
+                Kiểm tra giỏ hàng
+              </Link>
+            </div>
+
             <div className="hero-badges">
-              <span className="hero-badge">Máy chính hãng</span>
-              <span className="hero-badge">Tư vấn kỹ trước khi mua</span>
-              <span className="hero-badge">Bảo hành rõ ràng</span>
+              <span className="hero-badge">Hàng chính hãng</span>
+              <span className="hero-badge">Giá niêm yết rõ</span>
+              <span className="hero-badge">Bảo hành minh bạch</span>
             </div>
           </div>
 
-          <div className="hero-metrics" aria-label="Cam kết dịch vụ">
-            <div>
-              <strong>24h</strong>
-              <span>hỗ trợ đơn hàng</span>
+          <div className="hero-showcase">
+            <div className="hero-phone-frame">
+              <img
+                src="https://images.unsplash.com/photo-1695636953873-8db5f5e71fd6?q=80&w=1200&auto=format&fit=crop"
+                alt="Điện thoại cao cấp"
+              />
             </div>
-            <div>
-              <strong>100%</strong>
-              <span>thông tin rõ ràng</span>
-            </div>
-            <div>
-              <strong>12T</strong>
-              <span>bảo hành tiêu chuẩn</span>
+            <div className="hero-deal-card">
+              <span>Sản phẩm nổi bật</span>
+              <strong>iPhone, Samsung, Xiaomi</strong>
+              <p>Đặt hàng online, shop xác nhận nhanh.</p>
             </div>
           </div>
         </div>
@@ -60,18 +68,22 @@ export default function Home() {
 
       <section className="trust-band">
         <div className="container trust-grid">
-          <div>
-            <span className="section-kicker">TRẢI NGHIỆM MUA HÀNG</span>
-            <h2>Khách xem sản phẩm, thêm giỏ và đặt hàng trong vài bước.</h2>
+          <div className="trust-item">
+            <strong>24/7</strong>
+            <span>Tư vấn và xác nhận đơn</span>
           </div>
-          <p>
-            Mỗi sản phẩm có hình ảnh, giá bán, thương hiệu, tồn kho và mô tả rõ
-            ràng. Đội ngũ quản trị có thể cập nhật sản phẩm ngay khi có hàng mới.
-          </p>
+          <div className="trust-item">
+            <strong>100%</strong>
+            <span>Thông tin sản phẩm rõ ràng</span>
+          </div>
+          <div className="trust-item">
+            <strong>12T</strong>
+            <span>Bảo hành tiêu chuẩn</span>
+          </div>
         </div>
       </section>
 
-      <section className="section-space">
+      <section className="section-space" id="products">
         <div className="container">
           <div className="section-head">
             <div>
