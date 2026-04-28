@@ -32,26 +32,26 @@ export default function Home() {
       <section className="hero">
         <div className="container hero-grid">
           <div className="hero-text">
-            <span className="hero-eyebrow">HUYNH VU MOBILE</span>
-            <h1>Chọn điện thoại đẹp, mua rõ giá, nhận máy an tâm.</h1>
+            <span className="hero-eyebrow">HUYNH VU MOBILE - UY TÍN TẠO NIỀM TIN</span>
+            <h1>Điện thoại chất lượng, giá minh bạch, bảo hành đàng hoàng.</h1>
             <p>
-              Cửa hàng điện thoại chính hãng với trải nghiệm mua hàng gọn gàng:
-              xem sản phẩm, kiểm tra giá, thêm giỏ và để shop xác nhận nhanh.
+              Chúng tôi chọn máy kỹ, tư vấn thật, báo giá rõ ràng và đồng hành
+              sau khi bán. Khách mua online vẫn được xác nhận đầy đủ trước khi giao.
             </p>
 
             <div className="hero-actions">
               <a href="#products" className="btn btn-primary">
-                Xem sản phẩm
+                Xem máy đang bán
               </a>
               <Link to="/cart" className="btn btn-ghost">
-                Kiểm tra giỏ hàng
+                Kiểm tra đơn hàng
               </Link>
             </div>
 
             <div className="hero-badges">
-              <span className="hero-badge">Hàng chính hãng</span>
-              <span className="hero-badge">Giá rõ ràng</span>
-              <span className="hero-badge">Tư vấn đúng nhu cầu</span>
+              <span className="hero-badge">Uy tín trong từng giao dịch</span>
+              <span className="hero-badge">Máy chất lượng, rõ nguồn gốc</span>
+              <span className="hero-badge">Bảo hành có trách nhiệm</span>
             </div>
           </div>
 
@@ -67,18 +67,18 @@ export default function Home() {
                 />
               </div>
               <div className="hero-product-strip">
-                <span>Sẵn sàng tư vấn</span>
-                <strong>{featuredProduct?.name || "Dòng máy mới nhất"}</strong>
+                <span>Cam kết chất lượng</span>
+                <strong>{featuredProduct?.name || "Máy đẹp, nguồn gốc rõ ràng"}</strong>
                 <p>
                   {featuredProduct
                     ? `${Number(featuredProduct.price || 0).toLocaleString()} đ`
-                    : "Giá tốt, bảo hành rõ ràng"}
+                    : "Tư vấn kỹ trước khi chốt đơn"}
                 </p>
               </div>
             </div>
             <div className="hero-deal-card">
               <span>Dịch vụ tại shop</span>
-              <strong>Đặt online, xác nhận nhanh, hỗ trợ sau mua.</strong>
+              <strong>Mua đúng nhu cầu, nhận đúng máy, hỗ trợ rõ ràng sau mua.</strong>
             </div>
           </div>
         </div>
@@ -88,15 +88,15 @@ export default function Home() {
         <div className="container trust-grid">
           <div className="trust-item">
             <strong>01</strong>
-            <span>Xem cấu hình và giá bán rõ ràng</span>
+            <span>Kiểm tra chất lượng trước khi đăng bán</span>
           </div>
           <div className="trust-item">
             <strong>02</strong>
-            <span>Thêm giỏ, gửi thông tin nhận hàng</span>
+            <span>Báo giá minh bạch, không mập mờ chi phí</span>
           </div>
           <div className="trust-item">
             <strong>03</strong>
-            <span>Shop gọi xác nhận trước khi giao</span>
+            <span>Xác nhận đơn và bảo hành có trách nhiệm</span>
           </div>
         </div>
       </section>
@@ -113,7 +113,7 @@ export default function Home() {
             <div>
               <h2 className="page-title">Sản phẩm nổi bật</h2>
               <p className="section-subtitle">
-                Danh sách máy đang được shop cập nhật để khách chọn nhanh
+                Những mẫu máy được chọn lọc, cập nhật rõ giá để khách dễ so sánh
               </p>
             </div>
           </div>
