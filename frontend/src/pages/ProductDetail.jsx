@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProductById } from "../services/productService";
 import { useCart } from "../context/CartContext";
-import { resolveImageUrl } from "../utils/imageUrl";
+import { FALLBACK_PRODUCT_IMAGE, resolveImageUrl } from "../utils/imageUrl";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -89,6 +89,9 @@ export default function ProductDetail() {
             <img
               src={resolveImageUrl(product.image)}
               alt={product.name}
+              onError={(e) => {
+                e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+              }}
               style={{
                 width: "100%",
                 height: "100%",

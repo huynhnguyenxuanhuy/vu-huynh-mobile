@@ -5,7 +5,7 @@ import {
   getProducts,
   updateProduct,
 } from "../../services/productService";
-import { resolveImageUrl } from "../../utils/imageUrl";
+import { FALLBACK_PRODUCT_IMAGE, resolveImageUrl } from "../../utils/imageUrl";
 
 const initialForm = {
   name: "",
@@ -450,6 +450,9 @@ export default function Products() {
                         resolveImageUrl(product.image)
                       }
                       alt={product.name}
+                      onError={(e) => {
+                        e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                      }}
                       style={{
                         width: "100%",
                         height: "100%",

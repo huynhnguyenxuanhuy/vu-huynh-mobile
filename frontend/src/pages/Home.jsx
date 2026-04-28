@@ -2,13 +2,15 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ProductCard from "../components/ProductCard";
 import { getProducts } from "../services/productService";
-import { resolveImageUrl } from "../utils/imageUrl";
+import { FALLBACK_PRODUCT_IMAGE } from "../utils/imageUrl";
 
 export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const featuredProduct = products[0];
   const brands = ["iPhone", "Samsung", "Xiaomi", "OPPO", "Phụ kiện"];
+  const heroImage =
+    "https://images.unsplash.com/photo-1695636953873-8db5f5e71fd6?q=80&w=1200&auto=format&fit=crop";
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -57,12 +59,11 @@ export default function Home() {
             <div className="hero-device-panel">
               <div className="hero-phone-frame">
                 <img
-                  src={
-                    featuredProduct
-                      ? resolveImageUrl(featuredProduct.image)
-                      : "https://images.unsplash.com/photo-1695636953873-8db5f5e71fd6?q=80&w=1200&auto=format&fit=crop"
-                  }
-                  alt={featuredProduct?.name || "Điện thoại cao cấp"}
+                  src={heroImage}
+                  alt="Điện thoại cao cấp chính hãng"
+                  onError={(e) => {
+                    e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                  }}
                 />
               </div>
               <div className="hero-product-strip">

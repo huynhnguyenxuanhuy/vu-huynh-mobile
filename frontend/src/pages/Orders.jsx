@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getMyOrders } from "../services/orderService";
-import { resolveImageUrl } from "../utils/imageUrl";
+import { FALLBACK_PRODUCT_IMAGE, resolveImageUrl } from "../utils/imageUrl";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -184,6 +184,9 @@ export default function Orders() {
                               <img
                                 src={resolveImageUrl(item.image)}
                                 alt={item.name || "Product"}
+                                onError={(e) => {
+                                  e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                                }}
                               />
                             </div>
 

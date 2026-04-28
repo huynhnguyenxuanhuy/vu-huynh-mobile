@@ -11,7 +11,7 @@ import {
   getAdminOrders,
   getAdminUsers,
 } from "../../services/orderService";
-import { resolveImageUrl } from "../../utils/imageUrl";
+import { FALLBACK_PRODUCT_IMAGE, resolveImageUrl } from "../../utils/imageUrl";
 
 const initialForm = {
   name: "",
@@ -562,6 +562,9 @@ export default function Dashboard() {
                           <img
                             src={resolveImageUrl(product.image)}
                             alt={product.name}
+                            onError={(e) => {
+                              e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                            }}
                             style={{
                               width: 62,
                               height: 62,
@@ -785,6 +788,9 @@ export default function Dashboard() {
                                     <img
                                       src={resolveImageUrl(item.image)}
                                       alt={item.name || "Sản phẩm"}
+                                      onError={(e) => {
+                                        e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                                      }}
                                     />
                                   </div>
 

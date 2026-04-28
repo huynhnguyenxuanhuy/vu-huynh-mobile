@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
-import { resolveImageUrl } from "../utils/imageUrl";
+import { FALLBACK_PRODUCT_IMAGE, resolveImageUrl } from "../utils/imageUrl";
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
@@ -10,7 +10,13 @@ export default function ProductCard({ product }) {
     <div className="card">
       <div className="card-image-wrap">
         <span className="card-tag">{stock > 0 ? "Có hàng" : "Hết hàng"}</span>
-        <img src={resolveImageUrl(product.image)} alt={product.name} />
+        <img
+          src={resolveImageUrl(product.image)}
+          alt={product.name}
+          onError={(e) => {
+            e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+          }}
+        />
       </div>
 
       <div className="card-body">

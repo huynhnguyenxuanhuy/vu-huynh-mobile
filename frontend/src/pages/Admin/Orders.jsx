@@ -3,7 +3,7 @@ import {
   deleteAdminOrder,
   getAdminOrders,
 } from "../../services/orderService";
-import { resolveImageUrl } from "../../utils/imageUrl";
+import { FALLBACK_PRODUCT_IMAGE, resolveImageUrl } from "../../utils/imageUrl";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -127,6 +127,9 @@ export default function AdminOrders() {
                               <img
                                 src={resolveImageUrl(item.image)}
                                 alt={item.name || "Sản phẩm"}
+                                onError={(e) => {
+                                  e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                                }}
                               />
                             </div>
 

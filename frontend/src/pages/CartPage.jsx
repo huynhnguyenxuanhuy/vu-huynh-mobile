@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { createOrder } from "../services/orderService";
-import { resolveImageUrl } from "../utils/imageUrl";
+import { FALLBACK_PRODUCT_IMAGE, resolveImageUrl } from "../utils/imageUrl";
 
 export default function CartPage() {
   const { cartItems, removeFromCart, clearCart } = useCart();
@@ -115,6 +115,9 @@ export default function CartPage() {
                       <img
                         src={resolveImageUrl(item.image)}
                         alt={item.name}
+                        onError={(e) => {
+                          e.currentTarget.src = FALLBACK_PRODUCT_IMAGE;
+                        }}
                         style={{
                           width: 110,
                           height: 110,
