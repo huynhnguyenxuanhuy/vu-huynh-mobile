@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getProductById } from "../services/productService";
 import { useCart } from "../context/CartContext";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -86,10 +87,7 @@ export default function ProductDetail() {
             }}
           >
             <img
-              src={
-                product.image ||
-                "https://via.placeholder.com/900x700?text=No+Image"
-              }
+              src={resolveImageUrl(product.image)}
               alt={product.name}
               style={{
                 width: "100%",

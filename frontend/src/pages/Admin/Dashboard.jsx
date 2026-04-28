@@ -11,6 +11,7 @@ import {
   getAdminOrders,
   getAdminUsers,
 } from "../../services/orderService";
+import { resolveImageUrl } from "../../utils/imageUrl";
 
 const initialForm = {
   name: "",
@@ -35,6 +36,10 @@ export default function Dashboard() {
 
   const [form, setForm] = useState(initialForm);
   const [editingId, setEditingId] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [productSaving, setProductSaving] = useState(false);
+  const [productMessage, setProductMessage] = useState({ type: "", text: "" });
   const [loadingDeleteId, setLoadingDeleteId] = useState("");
   const [loadingProductDeleteId, setLoadingProductDeleteId] = useState("");
 
@@ -46,10 +51,10 @@ export default function Dashboard() {
     try {
       const res = await getAdminDashboard();
       setStats({
-        usersCount: res.data?.usersCount || 0,
-        productsCount: res.data?.productsCount || 0,
-        ordersCount: res.data?.ordersCount || 0,
-        revenue: res.data?.revenue || 0,
+        usersCount: res.data?.usersCount || res.data?.totalUsers || 0,
+        productsCount: res.data?.productsCount || res.data?.totalProducts || 0,
+        ordersCount: res.data?.ordersCount || res.data?.totalOrders || 0,
+        revenue: res.data?.revenue || res.data?.totalRevenue || 0,
       });
     } catch (error) {
       console.error("Lỗi lấy dashboard admin:", error);
@@ -100,30 +105,81 @@ export default function Dashboard() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      setImageFile(null);
+      setImagePreview(form.image ? resolveImageUrl(form.image) : "");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setProductMessage({ type: "error", text: "Vui lòng chọn đúng file ảnh." });
+      e.target.value = "";
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setProductMessage({ type: "", text: "" });
+  };
+
+  const buildProductFormData = () => {
+    const data = new FormData();
+
+    data.append("name", form.name.trim());
+    data.append("price", Number(form.price || 0));
+    data.append("description", form.description.trim());
+    data.append("brand", form.brand.trim());
+    data.append("countInStock", Number(form.countInStock || 0));
+    data.append("image", form.image.trim());
+
+    if (imageFile) {
+      data.append("imageFile", imageFile);
+    }
+
+    return data;
+  };
+
   const handleSubmitProduct = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      ...form,
-      price: Number(form.price || 0),
-      countInStock: Number(form.countInStock || 0),
-    };
+    if (!form.name.trim()) {
+      setProductMessage({ type: "error", text: "Vui lòng nhập tên sản phẩm." });
+      return;
+    }
+
+    if (!form.price || Number(form.price) <= 0) {
+      setProductMessage({ type: "error", text: "Giá sản phẩm không hợp lệ." });
+      return;
+    }
 
     try {
+      setProductSaving(true);
+      setProductMessage({ type: "", text: "" });
+
       if (editingId) {
-        await updateProduct(editingId, payload);
-        alert("Cập nhật sản phẩm thành công");
+        await updateProduct(editingId, buildProductFormData());
+        setProductMessage({ type: "success", text: "Cập nhật sản phẩm thành công." });
       } else {
-        await createProduct(payload);
-        alert("Thêm sản phẩm thành công");
+        await createProduct(buildProductFormData());
+        setProductMessage({ type: "success", text: "Thêm sản phẩm thành công." });
       }
 
       setForm(initialForm);
+      setImageFile(null);
+      setImagePreview("");
       setEditingId(null);
       await reloadAll();
     } catch (error) {
       console.error("Lỗi lưu sản phẩm:", error);
-      alert(error?.response?.data?.message || "Lưu sản phẩm thất bại");
+      setProductMessage({
+        type: "error",
+        text: error?.response?.data?.message || "Lưu sản phẩm thất bại.",
+      });
+    } finally {
+      setProductSaving(false);
     }
   };
 
@@ -137,6 +193,9 @@ export default function Dashboard() {
       brand: product.brand || "",
       countInStock: product.countInStock || "",
     });
+    setImageFile(null);
+    setImagePreview(product.image ? resolveImageUrl(product.image) : "");
+    setProductMessage({ type: "", text: "" });
 
     window.scrollTo({
       top: 0,
@@ -147,6 +206,9 @@ export default function Dashboard() {
   const handleResetForm = () => {
     setEditingId(null);
     setForm(initialForm);
+    setImageFile(null);
+    setImagePreview("");
+    setProductMessage({ type: "", text: "" });
   };
 
   const handleDeleteProduct = async (id) => {
@@ -298,11 +360,23 @@ export default function Dashboard() {
                 {editingId ? "Chỉnh sửa sản phẩm" : "Thêm sản phẩm mới"}
               </h2>
               <p className="section-subtitle">
-                Admin có thể đăng sản phẩm, sửa mô tả, giá, tồn kho và ảnh URL
+                Admin có thể đăng sản phẩm, tải ảnh từ thiết bị, sửa giá, mô tả và tồn kho
               </p>
             </div>
 
             <form onSubmit={handleSubmitProduct}>
+              {productMessage.text && (
+                <div
+                  className={`admin-form-alert ${
+                    productMessage.type === "success"
+                      ? "admin-form-alert-success"
+                      : "admin-form-alert-error"
+                  }`}
+                >
+                  {productMessage.text}
+                </div>
+              )}
+
               <div className="row">
                 <div className="col">
                   <div className="form-group">
@@ -334,13 +408,36 @@ export default function Dashboard() {
               <div className="row">
                 <div className="col">
                   <div className="form-group">
-                    <label>Ảnh URL</label>
-                    <input
-                      name="image"
-                      value={form.image}
-                      onChange={handleChange}
-                      placeholder="Dán link ảnh sản phẩm"
-                    />
+                    <label>Ảnh sản phẩm</label>
+                    <div className="admin-upload-box">
+                      <div className="admin-upload-preview">
+                        {imagePreview || form.image ? (
+                          <img
+                            src={imagePreview || resolveImageUrl(form.image)}
+                            alt="Xem trước ảnh sản phẩm"
+                          />
+                        ) : (
+                          <span>Chưa chọn ảnh</span>
+                        )}
+                      </div>
+
+                      <div className="admin-upload-actions">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                        />
+                        <input
+                          name="image"
+                          value={form.image}
+                          onChange={handleChange}
+                          placeholder="Hoặc giữ link ảnh cũ nếu cần"
+                        />
+                        <small>
+                          Chọn ảnh từ máy tính để sản phẩm hiển thị chuyên nghiệp hơn.
+                        </small>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -392,8 +489,12 @@ export default function Dashboard() {
                   marginTop: 10,
                 }}
               >
-                <button className="btn btn-primary" type="submit">
-                  {editingId ? "Cập nhật sản phẩm" : "Thêm sản phẩm"}
+                <button className="btn btn-primary" type="submit" disabled={productSaving}>
+                  {productSaving
+                    ? "Đang lưu..."
+                    : editingId
+                    ? "Cập nhật sản phẩm"
+                    : "Thêm sản phẩm"}
                 </button>
 
                 <button
@@ -465,7 +566,7 @@ export default function Dashboard() {
                       <td>
                         {product.image ? (
                           <img
-                            src={product.image}
+                            src={resolveImageUrl(product.image)}
                             alt={product.name}
                             style={{
                               width: 62,
@@ -688,10 +789,7 @@ export default function Dashboard() {
                                 <div className="admin-product-item-left">
                                   <div className="admin-product-thumb">
                                     <img
-                                      src={
-                                        item.image ||
-                                        "https://via.placeholder.com/80x80?text=No+Image"
-                                      }
+                                      src={resolveImageUrl(item.image)}
                                       alt={item.name || "Sản phẩm"}
                                     />
                                   </div>

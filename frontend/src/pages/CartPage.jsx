@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { createOrder } from "../services/orderService";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 export default function CartPage() {
   const { cartItems, removeFromCart, clearCart } = useCart();
@@ -112,7 +113,7 @@ export default function CartPage() {
                       style={{ display: "flex", gap: 16, alignItems: "center" }}
                     >
                       <img
-                        src={item.image}
+                        src={resolveImageUrl(item.image)}
                         alt={item.name}
                         style={{
                           width: 110,

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getMyOrders } from "../services/orderService";
+import { resolveImageUrl } from "../utils/imageUrl";
 
 export default function Orders() {
   const [orders, setOrders] = useState([]);
@@ -181,10 +182,7 @@ export default function Orders() {
                           <div className="admin-product-item-left">
                             <div className="admin-product-thumb">
                               <img
-                                src={
-                                  item.image ||
-                                  "https://via.placeholder.com/80x80?text=No+Image"
-                                }
+                                src={resolveImageUrl(item.image)}
                                 alt={item.name || "Product"}
                               />
                             </div>

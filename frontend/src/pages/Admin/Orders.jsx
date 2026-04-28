@@ -3,6 +3,7 @@ import {
   deleteAdminOrder,
   getAdminOrders,
 } from "../../services/orderService";
+import { resolveImageUrl } from "../../utils/imageUrl";
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -124,10 +125,7 @@ export default function AdminOrders() {
                           <div className="admin-product-item-left">
                             <div className="admin-product-thumb">
                               <img
-                                src={
-                                  item.image ||
-                                  "https://via.placeholder.com/80x80?text=No+Image"
-                                }
+                                src={resolveImageUrl(item.image)}
                                 alt={item.name || "Sản phẩm"}
                               />
                             </div>

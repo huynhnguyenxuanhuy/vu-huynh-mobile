@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const path = require("path");
 const connectDB = require("./config/db");
 const Product = require("./models/Product");
 
@@ -38,15 +39,28 @@ app.use(
 );
 
 app.use(express.json());
-app.use("/uploads", express.static("uploads"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/products", require("./routes/productRoutes"));
 app.use("/api/orders", require("./routes/orderRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 
+app.use((err, req, res, next) => {
+  if (err) {
+    const message =
+      err.code === "LIMIT_FILE_SIZE"
+        ? "Ảnh tải lên tối đa 5MB"
+        : err.message || "Có lỗi xảy ra";
+
+    return res.status(400).json({ message });
+  }
+
+  next();
+});
+
 app.get("/", (req, res) => {
-  res.send("VU HUYNH MOBILE API running...");
+  res.send("HUYNH VU MOBILE API running...");
 });
 
 const seedProducts = async () => {

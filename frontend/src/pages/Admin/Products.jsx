@@ -5,6 +5,7 @@ import {
   getProducts,
   updateProduct,
 } from "../../services/productService";
+import { resolveImageUrl } from "../../utils/imageUrl";
 
 const initialForm = {
   name: "",
@@ -18,6 +19,8 @@ const initialForm = {
 export default function Products() {
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState(initialForm);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
@@ -55,8 +58,29 @@ export default function Products() {
     });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      setImageFile(null);
+      setImagePreview(form.image ? resolveImageUrl(form.image) : "");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      setError("Vui lòng chọn đúng file ảnh");
+      e.target.value = "";
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
   const resetForm = () => {
     setForm(initialForm);
+    setImageFile(null);
+    setImagePreview("");
     setEditingId(null);
     setError("");
   };
@@ -75,15 +99,17 @@ export default function Products() {
       return;
     }
 
-    const payload = {
-      ...form,
-      name: form.name.trim(),
-      image: form.image.trim(),
-      description: form.description.trim(),
-      brand: form.brand.trim(),
-      price: Number(form.price),
-      countInStock: Number(form.countInStock) || 0,
-    };
+    const payload = new FormData();
+    payload.append("name", form.name.trim());
+    payload.append("image", form.image.trim());
+    payload.append("description", form.description.trim());
+    payload.append("brand", form.brand.trim());
+    payload.append("price", Number(form.price));
+    payload.append("countInStock", Number(form.countInStock) || 0);
+
+    if (imageFile) {
+      payload.append("imageFile", imageFile);
+    }
 
     try {
       setLoading(true);
@@ -114,6 +140,8 @@ export default function Products() {
       brand: product.brand || "",
       countInStock: product.countInStock || "",
     });
+    setImageFile(null);
+    setImagePreview(product.image ? resolveImageUrl(product.image) : "");
 
     window.scrollTo({
       top: 0,
@@ -256,14 +284,35 @@ export default function Products() {
             <div className="row">
               <div className="col">
                 <div className="form-group">
-                  <label>Ảnh URL</label>
-                  <input
-                    type="text"
-                    name="image"
-                    placeholder="Dán link ảnh sản phẩm"
-                    value={form.image}
-                    onChange={handleChange}
-                  />
+                  <label>Ảnh sản phẩm</label>
+                  <div className="admin-upload-box">
+                    <div className="admin-upload-preview">
+                      {imagePreview || form.image ? (
+                        <img
+                          src={imagePreview || resolveImageUrl(form.image)}
+                          alt="Xem trước ảnh sản phẩm"
+                        />
+                      ) : (
+                        <span>Chưa chọn ảnh</span>
+                      )}
+                    </div>
+
+                    <div className="admin-upload-actions">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                      <input
+                        type="text"
+                        name="image"
+                        placeholder="Hoặc giữ link ảnh cũ nếu cần"
+                        value={form.image}
+                        onChange={handleChange}
+                      />
+                      <small>Chọn ảnh trực tiếp từ thiết bị của admin.</small>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -405,8 +454,7 @@ export default function Products() {
                   >
                     <img
                       src={
-                        product.image ||
-                        "https://via.placeholder.com/400x300?text=No+Image"
+                        resolveImageUrl(product.image)
                       }
                       alt={product.name}
                       style={{

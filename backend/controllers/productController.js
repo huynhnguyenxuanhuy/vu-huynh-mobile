@@ -1,5 +1,22 @@
 const Product = require("../models/Product");
 
+const buildProductPayload = (body, file, existingImage = "") => {
+  const payload = {
+    name: body.name,
+    price: Number(body.price || 0),
+    image: body.image || existingImage,
+    description: body.description || "",
+    brand: body.brand || "Other",
+    countInStock: Number(body.countInStock || 0),
+  };
+
+  if (file) {
+    payload.image = `/uploads/${file.filename}`;
+  }
+
+  return payload;
+};
+
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
@@ -25,7 +42,7 @@ const getProductById = async (req, res) => {
 
 const createProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    const product = await Product.create(buildProductPayload(req.body, req.file));
     res.status(201).json(product);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -40,12 +57,14 @@ const updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found" });
     }
 
-    product.name = req.body.name ?? product.name;
-    product.price = req.body.price ?? product.price;
-    product.image = req.body.image ?? product.image;
-    product.description = req.body.description ?? product.description;
-    product.brand = req.body.brand ?? product.brand;
-    product.countInStock = req.body.countInStock ?? product.countInStock;
+    const payload = buildProductPayload(req.body, req.file, product.image);
+
+    product.name = payload.name ?? product.name;
+    product.price = payload.price ?? product.price;
+    product.image = payload.image ?? product.image;
+    product.description = payload.description ?? product.description;
+    product.brand = payload.brand ?? product.brand;
+    product.countInStock = payload.countInStock ?? product.countInStock;
 
     const updated = await product.save();
     res.json(updated);

@@ -12,6 +12,9 @@ import CartPage from "./pages/CartPage";
 import Orders from "./pages/Orders";
 
 import Dashboard from "./pages/Admin/Dashboard";
+import Products from "./pages/Admin/Products";
+import AdminOrders from "./pages/Admin/Orders";
+import Users from "./pages/Admin/Users";
 
 const API_BASE =
   import.meta.env.VITE_API_URL?.replace("/api", "") ||
@@ -179,6 +182,30 @@ function App() {
           element={
             <AdminRoute>
               <Dashboard />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <AdminRoute>
+              <Products />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={
+            <AdminRoute>
+              <AdminOrders />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <AdminRoute>
+              <Users />
             </AdminRoute>
           }
         />
